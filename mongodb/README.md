@@ -1,4 +1,4 @@
-Set up mongodb with helm
+# Set up mongodb with helm
 
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
