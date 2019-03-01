@@ -1,0 +1,18 @@
+# And then also a pvc:
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name:  mikro-testdata-pvc
+  namespace: haste
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  # You need to specify this or else it tries default storageclass
+  storageClassName: ''
+  # Bind to the specific pv above
+  selector:
+    matchLabels:
+      storage: nfs-mikro-testdata

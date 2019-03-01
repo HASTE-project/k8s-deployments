@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mikro-datamount
+  namespace: haste
+spec:
+  selector:
+    matchLabels:
+      app: test-mikro-datamount
+  replicas: 1
+  template:
+    metadata:
+      name: test
+      labels:
+        app: test-mikro-datamount
+    spec:
+      containers:
+        - name: test
+          image: ubuntu:xenial
+          command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 5 ;
+done"]
+          volumeMounts:
+            - mountPath: "/mnt/mikro-testdata"
+              name: test-volume
+          resources:
+            limits:
+              cpu: "1"
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+      volumes:
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: mikro-testdata-pvc
+      restartPolicy: Always
