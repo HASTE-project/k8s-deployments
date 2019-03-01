@@ -22,6 +22,10 @@ You can execute into it with:
 # kubectl exec --namespace haste -it test-mikro-datamount-XXXXXXXXXXXXXX bash
 ```
 
+Start the image processing app:
+```
+kubectl apply -f image_processing_app.yaml
+```
 
 
 # Set up mongodb with helm
@@ -35,4 +39,3 @@ Any additional parameters can be configured with additional `--set <param>=<valu
 To redeploy, the current helm deployment must be deleted before running `helm install` again:
 
 `helm delete --purge <name of installment, mongodb above>` 
-gc 

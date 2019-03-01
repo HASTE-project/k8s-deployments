@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-mikro-datamount
+  name: image-processing-app
   namespace: haste
 spec:
   selector:
     matchLabels:
-      app: test-mikro-datamount
+      app: image-processing-app
   replicas: 1
   template:
     metadata:
       name: test
       labels:
-        app: test-mikro-datamount
+        app: image-processing-app
     spec:
       containers:
-        - name: test
-          image: ubuntu:xenial
-          command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+        - name: image-proc
+          image: benblamey/image_analysis_container2:latest
+#          command: ["/bin/bash", "-ec", "while :; do echo '.'; sleep 5 ; done"]
           volumeMounts:
             - mountPath: "/mnt/mikro-testdata"
               name: test-volume
