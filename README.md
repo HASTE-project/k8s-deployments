@@ -27,6 +27,12 @@ Start the image processing app:
 kubectl apply -f image_processing_app.yaml
 ```
 
+If the image is updated, delete the deployment, (and then start again.)
+```
+kubectl --namespace haste delete deployment.apps/image-processing-app
+```
+
+
 
 # Set up mongodb with helm
 
@@ -39,3 +45,11 @@ Any additional parameters can be configured with additional `--set <param>=<valu
 To redeploy, the current helm deployment must be deleted before running `helm install` again:
 
 `helm delete --purge <name of installment, mongodb above>` 
+
+
+To list everything in haste:
+```
+$ helm list --namespace haste
+NAME    REVISION        UPDATED                         STATUS          CHART           APP VERSION     NAMESPACE
+mongodb 1               Thu Feb 28 10:45:11 2019        DEPLOYED        mongodb-5.3.2   4.0.6           haste  
+```
