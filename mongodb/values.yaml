@@ -5,12 +5,12 @@ resources:
     cpu: 4
     memory: 4G
   requests:
-    cpu: 2
-    memory: 2G
+    cpu: 1
+    memory: 1G
 
 persistence:
   enabled: true
 
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce # the volume can be mounted as read-write by a single node
   size: 8Gi
