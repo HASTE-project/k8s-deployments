@@ -34,6 +34,7 @@ kubectl --namespace haste delete deployment.apps/image-processing-app ; kubectl 
 (there is no nice way to force it to re-fetch this, see: 
 https://github.com/kubernetes/kubernetes/issues/33664 )
 
+-------
 
 # Set up mongodb
 ## Set up PV/PVC for persistence for mongodb
@@ -61,3 +62,6 @@ $ helm list --namespace haste
 NAME    REVISION        UPDATED                         STATUS          CHART           APP VERSION     NAMESPACE
 mongodb 1               Thu Feb 28 10:45:11 2019        DEPLOYED        mongodb-5.3.2   4.0.6           haste  
 ```
+
+-------
+
