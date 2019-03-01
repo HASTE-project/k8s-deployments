@@ -35,8 +35,13 @@ kubectl --namespace haste delete deployment.apps/image-processing-app ; kubectl 
 https://github.com/kubernetes/kubernetes/issues/33664 )
 
 
-# Set up mongodb with helm
+# Set up mongodb
+## Set up PV/PVC for persistence for mongodb
+Run the following to set up the PV/PVC for mongodb persistence
 
+`kubectl apply -f mongodb/haste-state-mongodb.yaml`
+
+## Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
 `helm install --name mongodb --namespace haste -f mongodb/values.yaml stable/mongodb --set serviceType=NodePort`
