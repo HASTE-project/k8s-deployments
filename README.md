@@ -29,9 +29,10 @@ kubectl apply -f image_processing_app.yaml
 
 If the image is updated, delete the deployment, (and then start again.)
 ```
-kubectl --namespace haste delete deployment.apps/image-processing-app
+kubectl --namespace haste delete deployment.apps/image-processing-app ; kubectl apply -f image_processing_app.yaml
 ```
-
+(there is no nice way to force it to re-fetch this, see: 
+https://github.com/kubernetes/kubernetes/issues/33664 )
 
 
 # Set up mongodb with helm
