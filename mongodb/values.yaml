@@ -1,15 +1,19 @@
+# See: https://github.com/helm/charts/tree/master/stable/mongodb
+
+
 usePassword: false
 
 resources: 
   limits:
     cpu: 4
     memory: 4G
-  requests:
+  requests: # requested levels
     cpu: 1
     memory: 1G
 
+# storage.
 persistence:
-  enabled: true
+  enabled: true # use PVC to persist data.
 
   accessModes:
     - ReadWriteOnce # the volume can be mounted as read-write by a single node
