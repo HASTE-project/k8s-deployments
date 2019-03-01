@@ -39,13 +39,15 @@ https://github.com/kubernetes/kubernetes/issues/33664 )
 
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
-`helm install --name mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
+`helm install --name mongodb --namespace haste -f mongodb/values.yaml stable/mongodb --set serviceType=NodePort`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
-To redeploy, the current helm deployment must be deleted before running `helm install` again:
-
-`helm delete --purge <name of installment, mongodb above>` 
+To redeploy, the current helm deployment must be deleted (see name above) before running `helm install` again:
+ 
+ 
+TODO: this isn't great -- its not possible to specify the namespace here (we could delete the wrong mongodb)
+`helm delete --purge mongodb` 
 
 
 To list everything in haste:
