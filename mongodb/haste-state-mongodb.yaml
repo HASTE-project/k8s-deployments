@@ -8,7 +8,7 @@ spec:
   capacity:
     storage: 10Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce # the volume can be mounted as read-write by a single node
   nfs:
     server: 10.10.0.8
     path: "/Public/kube-pv/haste-state-mongodb"
@@ -22,7 +22,7 @@ metadata:
   namespace: haste
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce # the volume can be mounted as read-write by a single node
   resources:
     requests:
       storage: 10Gi
