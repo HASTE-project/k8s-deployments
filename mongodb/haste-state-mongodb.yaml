@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: haste-state-mongodb-pv
+  labels:
+    storage: nfs-haste-state-mongodb
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.10.0.8
+    path: "/Public/kube-pv/haste-state-mongodb"
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name:  haste-state-mongodb-pvc
+  namespace: haste
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  # You need to specify this or else it tries default storageclass
+  storageClassName: ''
+  # Bind to the specific pv above
+  selector:
+    matchLabels:
+      storage: nfs-haste-state-mongodb
+

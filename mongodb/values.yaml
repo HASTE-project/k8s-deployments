@@ -10,6 +10,7 @@ resources:
 
 persistence:
   enabled: true
+  existingClaim: haste-state-mongodb-pvc
 
   accessModes:
     - ReadWriteOnce
