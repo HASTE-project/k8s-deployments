@@ -1,17 +1,21 @@
+# See: https://github.com/helm/charts/tree/master/stable/mongodb
+
+
 usePassword: false
 
-resources: 
+resources: # requested resources for deployment
   limits:
     cpu: 4
     memory: 4G
-  requests:
-    cpu: 2
-    memory: 2G
+  requests: 
+    cpu: 1
+    memory: 1G
 
+# storage.
 persistence:
   enabled: true
-  existingClaim: haste-state-mongodb-pvc
+  existingClaim: haste-state-mongodb-pvc # use pre-existing PVC to persist data
 
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce # the volume can be mounted as read-write by a single node
   size: 8Gi
