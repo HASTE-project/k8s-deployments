@@ -38,7 +38,7 @@ kubectl --namespace haste delete deployment.apps/image-processing-app
 
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
-`helm install --name mongodb --namespace haste -f mongodb/values.yaml --set persistence.size=30Gi --set usePassword=false stable/mongodb`
+`helm install --name mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
