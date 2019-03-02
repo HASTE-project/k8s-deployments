@@ -65,3 +65,11 @@ mongodb 1               Thu Feb 28 10:45:11 2019        DEPLOYED        mongodb-
 
 -------
 
+Copy files out:
+```
+kubectl cp haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/PolinaG-KO/ .
+```
+Copy files in:
+```
+kubectl cp . haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/azn
+```
