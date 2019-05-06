@@ -64,6 +64,10 @@ mongodb 1               Thu Feb 28 10:45:11 2019        DEPLOYED        mongodb-
 ```
 
 -------
+Setup port forwarding for MongoDB:
+```
+kubectl port-forward <<name of mongo pod>> --namespace haste 27018:27017
+```
 
 Copy files out:
 ```
