@@ -45,7 +45,7 @@ Run the following to set up the PV/PVC for mongodb persistence
 ## Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
-`helm install --name mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
+`helm install --name mongodb-haste --namespace haste -f mongodb/values.yaml stable/mongodb`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
