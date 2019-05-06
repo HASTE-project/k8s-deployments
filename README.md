@@ -53,7 +53,7 @@ To redeploy, the current helm deployment must be deleted (see name above) before
  
  
 TODO: this isn't great -- its not possible to specify the namespace here (we could delete the wrong mongodb)
-`helm delete --purge mongodb` 
+`helm delete --purge mongodb-haste` 
 
 
 To list everything in haste:
