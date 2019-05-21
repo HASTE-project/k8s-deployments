@@ -22,7 +22,9 @@ You can execute into it with:
 # kubectl exec --namespace haste -it test-mikro-datamount-XXXXXXXXXXXXXX bash
 ```
 
-Start the image processing app:
+## Image Processing App (old, standalone)
+
+Start the (standalone) image processing app:
 ```
 kubectl apply -f image_processing_app.yaml
 ```
@@ -30,6 +32,23 @@ kubectl apply -f image_processing_app.yaml
 If the image is updated, delete the deployment, and then start again:
 ```
 kubectl --namespace haste delete deployment.apps/image-processing-app ; kubectl apply -f image_processing_app.yaml
+```
+(there is no nice way to force it to re-fetch this, see: 
+https://github.com/kubernetes/kubernetes/issues/33664 )
+
+-------
+
+## Image Processing Client & Workers
+
+Start the client and workers:
+```
+kubectl apply -f pipeline_client.yaml
+kubectl apply -f pipeline_worker.yaml
+```
+
+If the image is updated, delete the deployment, and then start again:
+```
+kubectl --namespace haste delete deployment.apps/pipeline-client ; kubectl apply -f pipeline_client.yaml ; kubectl --namespace haste delete deployment.apps/pipeline-worker ; kubectl apply -f pipeline_worker.yaml
 ```
 (there is no nice way to force it to re-fetch this, see: 
 https://github.com/kubernetes/kubernetes/issues/33664 )
@@ -61,6 +80,8 @@ To set up RabbitMQ with helm chart, run following command from a point with acce
 `helm install --name haste-rabbitmq --namespace haste -f rabbitmq/values.yaml stable/rabbitmq`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/rabbitmq
+
+A user guest/guest needs to be added to the root vhost for the client/worker.
 
 
 # Redeploying helm applications
