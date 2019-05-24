@@ -19,7 +19,7 @@ kubectl apply -f mikro_testdata_ubuntu_container.yml
  
 You can execute into it with:
 ```
-# kubectl exec --namespace haste -it test-mikro-datamount-XXXXXXXXXXXXXX bash
+kubectl exec --namespace haste -it test-mikro-datamount-6c59856b87-6k2bj bash
 ```
 
 ## Image Processing App (old, standalone)
@@ -99,16 +99,29 @@ mongodb       	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6  
 ```
 
 -------
-Setup port forwarding for MongoDB:
+Setup port forwarding for remote MongoDB access:
 ```
 kubectl port-forward <<name of mongo pod>> --namespace haste 27018:27017
 ```
 
-Copy files out:
+-------
+# Copy files for testing 
+
+Use the test container to copy files in/out of the volume:
+
+Copy files out (ie. to the laptop)
 ```
 kubectl cp haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/PolinaG-KO/ .
 ```
-Copy files in:
+Copy files in (from the laptop):
 ```
-kubectl cp . haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/azn
+kubectl cp foo haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+kubectl cp /Users/benblamey/projects/haste/cell-profiler-work/OutOfFocus-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
 ```
+
+Copy files into source dir to test application (from inside the container)
+```
+cd /mnt/mikro-testdata 
+cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
+```
+
