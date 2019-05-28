@@ -1,0 +1,47 @@
+# TODO: max 1 replica supported. there is no feature to set max no of replicas.
+# to achieve this, clone the pvc, and set ReadWriteOnce access mode. (?)
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-client
+  namespace: haste
+spec:
+  selector:
+    matchLabels:
+      app: pipeline-client
+  replicas: 1
+  template:
+    metadata:
+      name: test
+      labels:
+        app: pipeline-client
+    spec:
+      containers:
+        - name: pipeline-client
+          image: benblamey/haste_pipeline_client:latest
+          args:
+            - "--include"
+            - tif
+            - "--tag"
+            - "mikro-testdata-source" # tag for outgoing messages to indicate source to workers. needs to match one of the configs in the workers.
+            - "--host"
+            - haste-rabbitmq.haste.svc.cluster.local
+            - "/mnt/mikro-testdata/source/" # path on disk
+          imagePullPolicy: Always # we use 'latest' tag, always pull. note: need to delete and re-create deployment for it to happen!
+          volumeMounts:
+            - mountPath: "/mnt/mikro-testdata"
+              name: test-volume
+          resources:
+            limits:
+              cpu: "1"
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+      volumes:
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: mikro-testdata-pvc
+      restartPolicy: Always

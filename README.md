@@ -14,15 +14,20 @@ kubectl apply -f mikro_testdata_pvc.yaml
 I also created this dummy-ubuntu-container:
 (a simple dummy ubuntu container executing a loop) 
 ```
-kubectl apply -f mikro_testdata_ubuntu_container.yml
+kubectl apply -f dummy-ubuntu-container.yaml
 ```
  
 You can execute into it with:
 ```
-# kubectl exec --namespace haste -it test-mikro-datamount-XXXXXXXXXXXXXX bash
+kubectl exec --namespace haste -it test-mikro-datamount-6c59856b87-6k2bj bash
+
+kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
+
 ```
 
-Start the image processing app:
+## Image Processing App (old, standalone)
+
+Start the (standalone) image processing app:
 ```
 kubectl apply -f image_processing_app.yaml
 ```
@@ -36,16 +41,41 @@ https://github.com/kubernetes/kubernetes/issues/33664 )
 
 -------
 
+## Image Processing Client & Workers
+
+Start the client and workers:
+```
+kubectl apply -f pipeline_client.yaml
+kubectl apply -f pipeline_worker.yaml
+```
+
+If the image is updated, delete the deployment, and then start again:
+```
+kubectl --namespace haste delete deployment.apps/pipeline-worker ; kubectl apply -f pipeline_worker.yaml ; kubectl --namespace haste delete deployment.apps/pipeline-client ; kubectl apply -f pipeline_client.yaml 
+```
+(there is no nice way to force it to re-fetch this, see: 
+https://github.com/kubernetes/kubernetes/issues/33664 )
+
+-------
+
 # Set up mongodb
 ## Set up PV/PVC for persistence for mongodb
 Run the following to set up the PV/PVC for mongodb persistence
 
 `kubectl apply -f mongodb/haste-state-mongodb.yaml`
 
+
+
 ## Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
 `helm install --name mongodb-haste --namespace haste -f mongodb/values.yaml stable/mongodb`
+
+Can see an issue in the logs on startup..
+"mongodb INFO ==> No injected configuration files found. Creating default config files..."
+Cause is unknown.
+
+`helm delete --purge mongodb-haste`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
@@ -61,6 +91,8 @@ To set up RabbitMQ with helm chart, run following command from a point with acce
 `helm install --name haste-rabbitmq --namespace haste -f rabbitmq/values.yaml stable/rabbitmq`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/rabbitmq
+
+A user guest/guest needs to be added to the root vhost for the client/worker.
 
 
 # Redeploying helm applications
@@ -78,16 +110,30 @@ mongodb       	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6  
 ```
 
 -------
-Setup port forwarding for MongoDB:
+Setup port forwarding for remote MongoDB access:
 ```
-kubectl port-forward <<name of mongo pod>> --namespace haste 27018:27017
+kubectl port-forward --namespace haste svc/mongodb-haste 27018:27017
 ```
 
-Copy files out:
+-------
+# Copy files for testing 
+
+Use the test container to copy files in/out of the volume:
+
+Copy files out (ie. to the laptop)
 ```
 kubectl cp haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/PolinaG-KO/ .
 ```
-Copy files in:
+Copy files in (from the laptop), e.g.:
 ```
-kubectl cp . haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/azn
+kubectl cp foo haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+kubectl cp /Users/benblamey/projects/haste/cell-profiler-work/OutOfFocus-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+kubectl cp /Users/benblamey/projects/haste/haste-image-analysis-spjuth-lab/worker/dry-run/MeasureImageQuality-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
 ```
+
+Copy files into source dir to test application (from inside the container)
+```
+cd /mnt/mikro-testdata 
+cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
+```
+

@@ -1,0 +1,82 @@
+# TODO: max 1 replica supported. there is no feature to set max no of replicas.
+# to achieve this, clone the pvc, and set ReadWriteOnce access mode. (?)
+
+
+# Note: pipeline must have an ExportToSpreadsheet module.
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-worker
+  namespace: haste
+spec:
+  selector:
+    matchLabels:
+      app: pipeline-worker
+  replicas: 1
+  template:
+    metadata:
+      name: test
+      labels:
+        app: pipeline-worker
+    spec:
+      containers:
+        - name: pipeline-worker
+          image: benblamey/haste_pipeline_worker:latest
+          args:
+            - "--host"
+            - haste-rabbitmq.haste.svc.cluster.local
+            - "--config"
+            - '{
+                "configs": [
+                  {
+                    "tag": "mikro-testdata-source",
+                    "root_path": "/mnt/mikro-testdata/source/",
+                    "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
+                    "storage_policy": "[ [0.0, 0.199999999, \"move-to-trash\"], [0.2, 1.0, \"move-to-keep\"] ]",
+                    "interestingness_function_comment": "# range 0..8. 0 = focused, 8 = unfocused.",
+                    "interestingness_function": "lambda row: float(row[\"ImageQuality_FocusScore_myimages\"])",
+                    "haste_storage_client_config": {
+                      "haste_metadata_server": {
+                        "connection_string": "mongodb://mongodb:27017/streams"
+                      },
+                      "log_level": "DEBUG",
+                      "targets": [
+                        {
+                          "id": "move-to-keep",
+                          "class": "haste_storage_client.storage.storage.MoveToDir",
+                          "config": {
+                            "source_dir": "/mnt/mikro-testdata/source/",
+                            "target_dir": "/mnt/mikro-testdata/target/keep/"
+                          }
+                        },
+                        {
+                          "id": "move-to-trash",
+                          "class": "haste_storage_client.storage.storage.MoveToDir",
+                          "config": {
+                            "source_dir": "/mnt/mikro-testdata/source/",
+                            "target_dir": "/mnt/mikro-testdata/target/trash/"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }'
+          imagePullPolicy: Always # we use 'latest' tag, always pull. note: need to delete and re-create deployment for it to happen!
+          volumeMounts:
+            - mountPath: "/mnt/mikro-testdata"
+              name: test-volume
+          resources:
+            limits:
+              cpu: "1"
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+      volumes:
+        - name: test-volume
+          persistentVolumeClaim:
+            claimName: mikro-testdata-pvc
+      restartPolicy: Always
