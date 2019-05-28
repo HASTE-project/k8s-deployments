@@ -2,6 +2,7 @@
 # to achieve this, clone the pvc, and set ReadWriteOnce access mode. (?)
 
 
+# Note: pipeline must have an ExportToSpreadsheet module.
 
 
 apiVersion: apps/v1
@@ -32,10 +33,10 @@ spec:
                   {
                     "tag": "mikro-testdata-source",
                     "root_path": "/mnt/mikro-testdata/source/",
-                    "pipeline": "/mnt/mikro-testdata/OutOfFocus-TestImages.cppipe",
+                    "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
                     "storage_policy": "[ [0.0, 0.199999999, \"move-to-trash\"], [0.2, 1.0, \"move-to-keep\"] ]",
                     "interestingness_function_comment": "# range 0..8. 0 = focused, 8 = unfocused.",
-                    "interestingness_function": "lambda row: int(row[\"ImageFocus_Score_myimages\"]) / 8",
+                    "interestingness_function": "lambda row: float(row[\"ImageQuality_FocusScore_myimages\"])",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
                         "connection_string": "mongodb://mongodb:27017/streams"
