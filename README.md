@@ -19,9 +19,10 @@ kubectl apply -f dummy-ubuntu-container.yaml
  
 You can execute into it with:
 ```
-kubectl exec --namespace haste -it test-mikro-datamount-6c59856b87-6k2bj bash
+kubectl exec --namespace haste -it test-mikro-datamount-5bdcd6d4f-4kvws bash
 
 kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
+kubectl exec --namespace haste -it test-mikro-datamount bash
 
 ```
 
