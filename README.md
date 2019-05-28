@@ -69,13 +69,13 @@ Run the following to set up the PV/PVC for mongodb persistence
 ## Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
-`helm install --name mongodb-haste --namespace haste -f mongodb/values.yaml stable/mongodb`
+`helm install --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
 
 Can see an issue in the logs on startup..
 "mongodb INFO ==> No injected configuration files found. Creating default config files..."
 Cause is unknown. With this error, clients are not able to connect.
 
-`helm delete --purge mongodb-haste`
+`helm delete --purge haste-mongodb`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
@@ -106,7 +106,7 @@ To redeploy, the current deployment must be deleted (see name above) before runn
 $ helm list --namespace haste
 NAME          	REVISION	UPDATED                 	STATUS  	CHART         	APP VERSION	NAMESPACE
 haste-rabbitmq	1       	Fri May 17 18:07:15 2019	DEPLOYED	rabbitmq-5.5.1	3.7.14     	haste    
-mongodb       	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
+haste-mongodb 	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
 ```
 
 -------
