@@ -73,7 +73,7 @@ To set up mongodb with helm chart, run following command from a point with acces
 
 Can see an issue in the logs on startup..
 "mongodb INFO ==> No injected configuration files found. Creating default config files..."
-Cause is unknown.
+Cause is unknown. With this error, clients are not able to connect.
 
 `helm delete --purge mongodb-haste`
 
