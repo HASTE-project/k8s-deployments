@@ -7,15 +7,24 @@ resources: # requested resources for deployment
   limits:
     cpu: 4
     memory: 4G
-  requests: 
+  requests:
     cpu: 1
     memory: 1G
+
+# don't allocate this deployment on machines with GPU resources
+nodeSelector:
+  acceleration: none
+
+# provide some extra time for the mongdb server to start up
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 300
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 300
 
 # storage.
 persistence:
   enabled: true
   existingClaim: haste-state-mongodb-pvc # use pre-existing PVC to persist data
-
-  accessModes:
-    - ReadWriteOnce # the volume can be mounted as read-write by a single node
-  size: 8Gi
