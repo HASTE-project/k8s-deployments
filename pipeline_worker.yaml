@@ -41,7 +41,7 @@ spec:
                     "interestingness_function": "lambda row: float(row[\"ImageQuality_FocusScore_myimages\"])",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
-                        "connection_string": "mongodb://mongodb:27017/streams"
+                        "connection_string": "mongodb://haste-mongodb:27017/streams"
                       },
                       "log_level": "DEBUG",
                       "targets": [
@@ -70,13 +70,6 @@ spec:
           volumeMounts:
             - mountPath: "/mnt/mikro-testdata"
               name: test-volume
-          resources:
-            limits:
-              cpu: "4"
-              memory: 1Gi
-            requests:
-              cpu: 100m
-              memory: 200Mi
       volumes:
         - name: test-volume
           persistentVolumeClaim:

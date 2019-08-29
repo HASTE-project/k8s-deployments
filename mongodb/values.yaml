@@ -3,13 +3,7 @@
 
 usePassword: false
 
-resources: # requested resources for deployment
-  limits:
-    cpu: 4
-    memory: 4G
-  requests: 
-    cpu: 1
-    memory: 1G
+
 
 # storage.
 persistence:

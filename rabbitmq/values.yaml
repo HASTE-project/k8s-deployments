@@ -68,13 +68,7 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  limits:
-    cpu: 4
-    memory: 4G
-  requests:
-    cpu: 1
-    memory: 1G
+
 
 ## Replica count, set to 1 to provide a default available cluster
 replicas: 1
