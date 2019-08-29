@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9a7a6758-3fa4-4781-ad9c-06eef85e5a6a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_deprecated/image_processing_app.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/_deprecated/image_processing_app.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dummy-ubuntu-container.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/dummy-ubuntu-container.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mongodb/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/values.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pipeline_client.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline_client.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pipeline_worker.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline_worker.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rabbitmq/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/rabbitmq/values.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +21,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="216">
-                <caret line="62" column="131" selection-start-line="62" selection-start-column="131" selection-end-line="62" selection-end-column="131" />
+              <first_editor relative-caret-position="86">
+                <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
               </first_editor>
               <second_editor />
             </state>
@@ -298,12 +292,12 @@
       <workItem from="1559058920968" duration="1913000" />
       <workItem from="1559067330668" duration="5364000" />
       <workItem from="1559114795130" duration="1626000" />
-      <workItem from="1567064476102" duration="7669000" />
+      <workItem from="1567064476102" duration="8072000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73892000" />
+    <option name="totallyTimeSpent" value="74295000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1536" height="1412" extended-state="0" />
@@ -431,8 +425,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="216">
-            <caret line="62" column="131" selection-start-line="62" selection-start-column="131" selection-end-line="62" selection-end-column="131" />
+          <first_editor relative-caret-position="86">
+            <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
           </first_editor>
           <second_editor />
         </state>

@@ -130,7 +130,7 @@ To redeploy, the current deployment must be deleted (see name above) before runn
 $ helm list --namespace haste
 NAME          	REVISION	UPDATED                 	STATUS  	CHART         	APP VERSION	NAMESPACE
 haste-rabbitmq	1       	Fri May 17 18:07:15 2019	DEPLOYED	rabbitmq-5.5.1	3.7.14     	haste    
-mongodb       	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
+haste-mongodb 	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
 ```
 
 -------
