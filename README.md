@@ -25,6 +25,13 @@ kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
 
 ```
 
+Checking resource usage/namespace quotas/default resource specs:
+```
+kubectl describe resourcequotas -n haste
+
+kubectl describe limitranges -n haste
+```
+
 ## Image Processing App (old, standalone)
 
 Start the (standalone) image processing app:
