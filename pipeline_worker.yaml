@@ -4,6 +4,9 @@
 
 # Note: pipeline must have an ExportToSpreadsheet module.
 
+# CellProfiler is quite resource hungry -- if it seems to inexplicably die, its probably ran out of memory.
+
+
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,11 +38,10 @@ spec:
                     "root_path": "/mnt/mikro-testdata/source/",
                     "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
                     "storage_policy": "[ [0.0, 0.199999999, \"move-to-trash\"], [0.2, 1.0, \"move-to-keep\"] ]",
-                    "interestingness_function_comment": "# range 0..8. 0 = focused, 8 = unfocused.",
                     "interestingness_function": "lambda row: float(row[\"ImageQuality_FocusScore_myimages\"])",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
-                        "connection_string": "mongodb://mongodb:27017/streams"
+                        "connection_string": "mongodb://haste-mongodb:27017/streams"
                       },
                       "log_level": "DEBUG",
                       "targets": [
@@ -68,13 +70,6 @@ spec:
           volumeMounts:
             - mountPath: "/mnt/mikro-testdata"
               name: test-volume
-          resources:
-            limits:
-              cpu: "1"
-              memory: 500Mi
-            requests:
-              cpu: 100m
-              memory: 200Mi
       volumes:
         - name: test-volume
           persistentVolumeClaim:
