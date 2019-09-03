@@ -35,6 +35,13 @@ kubectl exec --namespace haste -it test-mikro-datamount bash
 
 ```
 
+Checking resource usage/namespace quotas/default resource specs:
+```
+kubectl describe resourcequotas -n haste
+
+kubectl describe limitranges -n haste
+```
+
 ## Image Processing App (old, standalone)
 
 Start the (standalone) image processing app:
