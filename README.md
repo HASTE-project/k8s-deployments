@@ -67,7 +67,7 @@ kubectl apply -f pipeline_worker.yaml
 ```
 
 ```
-# a busy worker pod will consume ~50% cpu -- so this auto-scaler will simply scale to the max whenever there are messages on the Q.
+# scaling - a busy worker pod will consume ~50% cpu -- so this auto-scaler will simply scale to the max whenever there are messages on the Q.
 kubectl --namespace haste autoscale deployment pipeline-worker --cpu-percent=10 --min=1 --max=18
 
 kubectl --namespace haste get hpa

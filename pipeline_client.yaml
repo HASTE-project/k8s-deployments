@@ -33,8 +33,16 @@ spec:
           volumeMounts:
             - mountPath: "/mnt/mikro-testdata"
               name: test-volume
+          resources:
+            limits:
+              cpu: 200m
+              memory: 100Mi
+            requests:
+              cpu: 30m
+              memory: 30Mi
       volumes:
         - name: test-volume
           persistentVolumeClaim:
             claimName: mikro-testdata-pvc
+
       restartPolicy: Always

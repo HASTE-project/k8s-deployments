@@ -70,6 +70,13 @@ spec:
           volumeMounts:
             - mountPath: "/mnt/mikro-testdata"
               name: test-volume
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1Gi
+            requests:
+              cpu: 1200m
+              memory: 400Mi
       volumes:
         - name: test-volume
           persistentVolumeClaim:
