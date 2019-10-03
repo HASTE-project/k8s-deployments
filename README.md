@@ -179,3 +179,15 @@ cd /mnt/mikro-testdata
 rm ./source/* 
 cp -v ./BBBC021_v1/Week1_22123/*.tif ./source/
 ```
+
+
+```
+for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip ; done
+```
+
+
+cd /mnt/mikro-testdata
+mkdir ./source
+# use find, incase there are lots of files...
+find ./source/* -delete
+find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
