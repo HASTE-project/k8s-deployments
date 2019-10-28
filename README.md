@@ -113,6 +113,10 @@ Run the following to set up the PV/PVC for RabbitMQ persistence
 `kubectl apply -f rabbitmq/haste-rabbitmq.yaml`
 
 ## Set up RabbitMQ with helm
+First, you have to create the credentials for the rabbitmq server. These will be used by scripts to access the mq.
+
+`kubectl create secret generic rabbitmq-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+
 To set up RabbitMQ with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
 `helm install --name haste-rabbitmq --namespace haste -f rabbitmq/values.yaml stable/rabbitmq`
