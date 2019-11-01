@@ -11,7 +11,7 @@ kubectl --namespace haste get pods
 
 
 Persistent Volume:
-``` 
+```
 kubectl apply -f mikro_testdata_pv.yaml
 ```
 
@@ -113,9 +113,49 @@ Run the following to set up the PV/PVC for RabbitMQ persistence
 `kubectl apply -f rabbitmq/haste-rabbitmq.yaml`
 
 ## Set up RabbitMQ with helm
-First, you have to create the credentials for the rabbitmq server. These will be used by scripts to access the mq.
+First, you have to create the user credentials for the rabbitmq server. These will be used by scripts to access the mq. The credentials are created using two secrets; one for the admin user creation, and another for all other users. Because of the way the rabbitmq container is initialized, we have to create the admin user twice, once in each secret. A way to get around this would be to modifiy the docker image, but we will probably want to keep using the official image.
 
-`kubectl create secret generic rabbitmq-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+`# create admin secret
+kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password=pass0
+
+# create the other user secret, and additional config of vhost and permissions, that is otherwise lost when creating users this way.
+kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition.json="{\
+   'users':[\
+      {\
+         'name':'hasterabbit',\
+         'password_hash':'$(python rabbitmq/rabbitmq_password_hasher.py pass0)',\
+         'hashing_algorithm':'rabbit_password_hashing_sha256',\
+         'tags':'administrator'\
+      },\
+      {\
+         'name':'nonadmin_user',\
+         'password_hash':'$(python rabbitmq/rabbitmq_password_hasher.py pass1)',\
+         'hashing_algorithm':'rabbit_password_hashing_sha256',\
+         'tags':''\
+      }\
+   ],\
+   'vhosts':[\
+      {\
+         'name':'/'\
+      }\
+   ],\
+   'permissions':[\
+      {\
+         'user':'hasterabbit',\
+         'vhost':'/',\
+         'configure':'.*',\
+         'write':'.*',\
+         'read':'.*'\
+      },\
+      {\
+         'user':'nonadmin_user',\
+         'vhost':'/',\
+         'configure':'',\
+         'write':'.*',\
+         'read':'.*'\
+      }\
+   ]\
+}"`
 
 To set up RabbitMQ with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
