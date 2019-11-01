@@ -115,7 +115,8 @@ Run the following to set up the PV/PVC for RabbitMQ persistence
 ## Set up RabbitMQ with helm
 First, you have to create the user credentials for the rabbitmq server. These will be used by scripts to access the mq. The credentials are created using two secrets; one for the admin user creation, and another for all other users. Because of the way the rabbitmq container is initialized, we have to create the admin user twice, once in each secret. A way to get around this would be to modifiy the docker image, but we will probably want to keep using the official image.
 
-`# create admin secret
+```
+# create admin secret
 kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password=pass0
 
 # create the other user secret, and additional config of vhost and permissions, that is otherwise lost when creating users this way.
@@ -155,7 +156,8 @@ kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition
          'read':'.*'\
       }\
    ]\
-}"`
+}"
+```
 
 To set up RabbitMQ with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
