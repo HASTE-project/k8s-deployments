@@ -120,10 +120,14 @@ A way to get around this would be to modifiy the docker image, but we will proba
 
 Note: the administrative password needs to be changed to something random.
 The guest credentials match those defined in the client/worker -- guest/guest.
+The guest user doesn't have admin rights to login via the web mgmt GUI.
 
 ```
+kubectl delete secret rabbitmq-admin-creds
+kubectl delete secret rabbitmq-user-creds
+
 # create admin secret
-kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password=pass0
+kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password='dwe4oihdfoh'
 
 # create the other user secret, and additional config of vhost and permissions, that is otherwise lost when creating users this way.
 kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition.json="{\
@@ -167,13 +171,12 @@ kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition
 
 To set up RabbitMQ with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
+`helm del --purge haste-rabbitmq`
+
 `helm install --name haste-rabbitmq --namespace haste -f rabbitmq/values.yaml stable/rabbitmq`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/rabbitmq
 
-A user with credentials guest/guest needs to be added with permissions for the root vhost for the client/worker. 
-This matches the default credentials used by the client and worker.
-(Don't grant admin rights -- that way the user won't be able to login via the web mgmt GUI).
 
 
 
