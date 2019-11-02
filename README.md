@@ -127,7 +127,7 @@ kubectl delete secret rabbitmq-admin-creds
 kubectl delete secret rabbitmq-user-creds
 
 # create admin secret
-kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password='dwe4oihdfoh'
+kubectl create secret generic rabbitmq-admin-creds --from-literal=username=hasterabbit --from-literal=rabbitmq-password='pass0'
 
 # create the other user secret, and additional config of vhost and permissions, that is otherwise lost when creating users this way.
 kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition.json="{\
