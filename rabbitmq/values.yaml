@@ -16,8 +16,17 @@ podManagementPolicy: OrderedReady
 ## section of specific values for rabbitmq
 rabbitmq:
   username: hasterabbit
-  existingPasswordSecret: rabbitmq-creds
+  existingPasswordSecret: rabbitmq-admin-creds
 
+  # Load the user definitions specified in the secret. Will create all users
+  # that does not exist yet, or update existing users. Users not specified 
+  # in the secret will remain untouched i RabbitMQs database.
+  loadDefinition:
+    enabled: true
+    secretName: rabbitmq-user-creds
+  extraConfiguration: |
+    management.load_definitions = /app/load_definition.json
+    
 
 ## Kubernetes service type
 service:
@@ -56,13 +65,13 @@ persistence:
   ## this enables PVC templates that will create one per pod
   enabled: true
 
-  accessMode: ReadWriteOnce
+  #accessMode: ReadWriteOnce
   existingClaim: "haste-rabbitmq-pvc"
 
-  # If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
+   #If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   size: 8Gi
 
-  # persistence directory, maps to the rabbitmq data directory
+   #persistence directory, maps to the rabbitmq data directory
   path: /opt/bitnami/rabbitmq/var/lib/rabbitmq
 
 ## Configure resource requests and limits
