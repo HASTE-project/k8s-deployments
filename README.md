@@ -113,7 +113,13 @@ Run the following to set up the PV/PVC for RabbitMQ persistence
 `kubectl apply -f rabbitmq/haste-rabbitmq.yaml`
 
 ## Set up RabbitMQ with helm
-First, you have to create the user credentials for the rabbitmq server. These will be used by scripts to access the mq. The credentials are created using two secrets; one for the admin user creation, and another for all other users. Because of the way the rabbitmq container is initialized, we have to create the admin user twice, once in each secret. A way to get around this would be to modifiy the docker image, but we will probably want to keep using the official image.
+First, you have to create the user credentials for the rabbitmq server. These will be used by scripts to access the mq. 
+The credentials are created using two secrets; one for the admin user creation, and another for all other users. 
+Because of the way the rabbitmq container is initialized, we have to create the admin user twice, once in each secret. 
+A way to get around this would be to modifiy the docker image, but we will probably want to keep using the official image.
+
+Note: the administrative password needs to be changed to something random.
+The guest credentials match those defined in the client/worker -- guest/guest.
 
 ```
 # create admin secret
@@ -129,8 +135,8 @@ kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition
          'tags':'administrator'\
       },\
       {\
-         'name':'nonadmin_user',\
-         'password_hash':'$(python rabbitmq/rabbitmq_password_hasher.py pass1)',\
+         'name':'guest',\
+         'password_hash':'$(python rabbitmq/rabbitmq_password_hasher.py guest)',\
          'hashing_algorithm':'rabbit_password_hashing_sha256',\
          'tags':''\
       }\
@@ -149,7 +155,7 @@ kubectl create secret generic rabbitmq-user-creds --from-literal=load_definition
          'read':'.*'\
       },\
       {\
-         'user':'nonadmin_user',\
+         'user':'guest',\
          'vhost':'/',\
          'configure':'',\
          'write':'.*',\

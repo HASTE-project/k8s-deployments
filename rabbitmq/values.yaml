@@ -65,7 +65,8 @@ persistence:
   ## this enables PVC templates that will create one per pod
   enabled: true
 
-  #accessMode: ReadWriteOnce
+  # TODO: @dahlo commented this out -- not sure why?
+  accessMode: ReadWriteOnce
   existingClaim: "haste-rabbitmq-pvc"
 
    #If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
