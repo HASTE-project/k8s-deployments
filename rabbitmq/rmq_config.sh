@@ -39,7 +39,7 @@ kubectl --namespace haste create secret generic rabbitmq-user-creds --from-liter
       {\
          \"user\":\"guest\",\
          \"vhost\":\"/\",\
-         \"configure\":\"\",\
+         \"configure\":\".*\",\
          \"write\":\".*\",\
          \"read\":\".*\"\
       }\
