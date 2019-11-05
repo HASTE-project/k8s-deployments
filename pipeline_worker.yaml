@@ -37,8 +37,8 @@ spec:
                     "tag": "mikro-testdata-source",
                     "root_path": "/mnt/mikro-testdata/source/",
                     "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
-                    "storage_policy": "[ [0.0, 0.199999999, \"move-to-trash\"], [0.2, 1.0, \"move-to-keep\"] ]",
-                    "interestingness_function": "lambda row: float(row[\"ImageQuality_FocusScore_myimages\"])",
+                    "storage_policy": "[ [-10000, -2.999999999, \"move-to-trash\"], [-3, 1000, \"move-to-keep\"] ]",
+                    "interestingness_function": "lambda row: float(row[\"ImageQuality_PowerLogLogSlope_myimages\"])",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
                         "connection_string": "mongodb://haste-mongodb:27017/streams"

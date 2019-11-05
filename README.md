@@ -28,7 +28,7 @@ kubectl apply -f dummy-ubuntu-container.yaml
  
 You can execute into it with:
 ```
-kubectl exec --namespace haste -it test-mikro-datamount-5bdcd6d4f-4kvws bash
+kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-h756d bash
 
 kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
 kubectl exec --namespace haste -it test-mikro-datamount bash
@@ -195,6 +195,7 @@ for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006
 ```
 
 ```
+# run BBBC006
 cd /mnt/mikro-testdata
 mkdir ./source
 # use find, incase there are lots of files...
