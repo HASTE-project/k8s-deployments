@@ -29,6 +29,8 @@ kubectl apply -f dummy-ubuntu-container.yaml
 You can execute into it with:
 ```
 kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-h756d bash
+kubectl exec --namespace haste -it pipeline-client-869546b6bb-qsj6m bash
+	
 
 kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
 kubectl exec --namespace haste -it test-mikro-datamount bash
@@ -162,7 +164,12 @@ Use the test container to copy files in/out of the volume:
 
 Copy files out (ie. to the laptop)
 ```
-kubectl cp haste/test-mikro-datamount-6c59856b87-ldqp8:/mnt/mikro-testdata/PolinaG-KO/ .
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/ .
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/list.txt list.txt
+
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif 181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif
+
+
 ```
 Copy files in (from the laptop), e.g.:
 ```
@@ -173,6 +180,7 @@ kubectl cp /Users/benblamey/projects/haste/haste-image-analysis-spjuth-lab/worke
 kubectl --namespace haste cp /Users/benblamey/projects/haste/images/BBBC021_v1/BBBC021_v1_images_Week1_22123.zip test-mikro-datamount-5bdcd6d4f-p5vrh:/mnt/mikro-testdata/BBC021_v1
 
 
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif /Users/benblamey/projects/haste/images/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 
 
 
 ```
@@ -180,6 +188,8 @@ kubectl --namespace haste cp /Users/benblamey/projects/haste/images/BBBC021_v1/B
 Copy files into source dir to test application (from inside the container)
 ```
 cd /mnt/mikro-testdata 
+rm ./source/*
+mkdir ./source
 cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
 ```
 
@@ -188,6 +198,22 @@ cd /mnt/mikro-testdata
 rm ./source/* 
 cp -v ./BBBC021_v1/Week1_22123/*.tif ./source/
 ```
+
+
+```
+cd /mnt/mikro-testdata
+rm ./source/* 
+cp -v ./BBBC021_v1/Week1_22123/*.tif ./source/
+```
+
+
+
+```
+cd /mnt/mikro-testdata
+rm ./source/* 
+cp -v ./azn/azn/*.tif ./source/
+```
+
 
 Some other snippets to fetch datasets / kickoff the pipeline... 
 ```
@@ -202,3 +228,16 @@ mkdir ./source
 find ./source/* -delete
 find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
 ```
+
+```
+# run Polina
+cd /mnt/mikro-testdata
+mkdir ./source
+# use find, incase there are lots of files...
+find ./source/* -delete
+find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
+```
+
+
+ 
+cat list.txt | while read line; do echo $line; kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/$line $line; done

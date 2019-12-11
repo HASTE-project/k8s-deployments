@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: admin password from user input, refence a variable twice
+
 
 kubectl --namespace haste delete secret rabbitmq-admin-creds
 kubectl --namespace haste delete secret rabbitmq-user-creds
