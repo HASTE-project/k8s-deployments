@@ -65,7 +65,8 @@ https://github.com/kubernetes/kubernetes/issues/33664 )
 Start the client and workers:
 ```
 kubectl apply -f pipeline_client.yaml
-kubectl apply -f pipeline_worker.yaml
+
+kubectl delete -n haste deployment pipeline-worker ; kubectl apply -f pipeline_worker.yaml
 ```
 
 ```
@@ -236,6 +237,15 @@ mkdir ./source
 # use find, incase there are lots of files...
 find ./source/* -delete
 find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
+```
+
+```
+# run Polina Single Image
+cd /mnt/mikro-testdata
+mkdir ./source
+# use find, incase there are lots of files...
+find ./source/* -delete
+cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_D09_s5_w4BC3DBE5C-C6C1-4AA5-A7BD-40D08C48EF76.tif ./source/
 ```
 
 

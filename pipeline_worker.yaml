@@ -37,7 +37,7 @@ spec:
                     "tag": "mikro-testdata-source",
                     "root_path": "/mnt/mikro-testdata/source/",
                     "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
-                    "storage_policy": "[ [-10000, -2.999999999, \"move-to-trash\"], [-3, 1000, \"move-to-keep\"] ]",
+                    "storage_policy": "[ [0, 0.25, \"tier0\"], [0.25, 0.50, \"tier1\"], [0.50, 0.75, \"tier2\"], [0.75, 1.01, \"tier3\"] ]",
                     "interestingness_function": "lambda row: float(row[\"ImageQuality_PowerLogLogSlope_myimages\"])",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
@@ -46,19 +46,35 @@ spec:
                       "log_level": "DEBUG",
                       "targets": [
                         {
-                          "id": "move-to-keep",
+                          "id": "tier0",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/keep/"
+                            "target_dir": "/mnt/mikro-testdata/target/0/"
                           }
                         },
                         {
-                          "id": "move-to-trash",
+                          "id": "tier1",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/trash/"
+                            "target_dir": "/mnt/mikro-testdata/target/1/"
+                          }
+                        },
+                        {
+                          "id": "tier2",
+                          "class": "haste_storage_client.storage.storage.MoveToDir",
+                          "config": {
+                            "source_dir": "/mnt/mikro-testdata/source/",
+                            "target_dir": "/mnt/mikro-testdata/target/2/"
+                          }
+                        },
+                        {
+                          "id": "tier3",
+                          "class": "haste_storage_client.storage.storage.MoveToDir",
+                          "config": {
+                            "source_dir": "/mnt/mikro-testdata/source/",
+                            "target_dir": "/mnt/mikro-testdata/target/3/"
                           }
                         }
                       ]
