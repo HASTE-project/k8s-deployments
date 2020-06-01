@@ -66,6 +66,7 @@ Start the client and workers:
 ```
 kubectl apply -f pipeline_client.yaml
 
+# need to delete the deployment to fetch the fresh docker image
 kubectl delete -n haste deployment pipeline-worker ; kubectl apply -f pipeline_worker.yaml
 ```
 
@@ -249,5 +250,7 @@ cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-G
 ```
 
 
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/BBBC006/filelist.txt
  
 cat list.txt | while read line; do echo $line; kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/$line $line; done
+cat list.txt | while read line; do echo $line; done

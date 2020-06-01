@@ -37,8 +37,7 @@ spec:
                     "tag": "mikro-testdata-source",
                     "root_path": "/mnt/mikro-testdata/source/",
                     "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
-                    "storage_policy": "[ [0, 0.25, \"tier0\"], [0.25, 0.50, \"tier1\"], [0.50, 0.75, \"tier2\"], [0.75, 1.01, \"tier3\"] ]",
-                    "interestingness_function": "lambda row: float(row[\"ImageQuality_PowerLogLogSlope_myimages\"])",
+                    "storage_policy": "[ [0, 0.25, \"tier3\"], [0.25, 0.50, \"tier2\"], [0.50, 0.75, \"tier1\"], [0.75, 1.01, \"tier0\"] ]",
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
                         "connection_string": "mongodb://haste-mongodb:27017/streams"
