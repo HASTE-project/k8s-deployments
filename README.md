@@ -1,14 +1,15 @@
+Deployment and configuration scripts for the image processing pipeline application at https://github.com/HASTE-project/cellprofiler-pipeline.
 
-Get all running pods:
+This is a simple, distributed, image stream processing pipeline built around CellProfiler, as a case study demonstrating use of the HASTE Toolkit.
+These deployment scripts configure/deploy the client and worker applications, as well as RabbitMQ and MongoDB to form the complete pipeline.
+
+See:
 ```
-kubectl --namespace haste get pods
+"Rapid development of cloud-native intelligent data pipelines for scientific data streams using the HASTE Toolkit"
+https://www.biorxiv.org/content/10.1101/2020.09.13.274779v1
 ```
 
-
-
-
-# k8s-deployments
-
+# Deployment
 
 Persistent Volume:
 ```
@@ -31,34 +32,9 @@ You can execute into it with:
 kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-h756d bash
 kubectl exec --namespace haste -it pipeline-client-869546b6bb-qsj6m bash
 	
-
 kubectl exec --namespace haste -it pipeline-worker-98799dbbc-d2qv4 bash
 kubectl exec --namespace haste -it test-mikro-datamount bash
-
 ```
-
-Checking resource usage/namespace quotas/default resource specs:
-```
-kubectl describe resourcequotas -n haste
-
-kubectl describe limitranges -n haste
-```
-
-## Image Processing App (old, standalone)
-
-Start the (standalone) image processing app:
-```
-kubectl apply -f image_processing_app.yaml
-```
-
-If the image is updated, delete the deployment, and then start again:
-```
-kubectl --namespace haste delete deployment.apps/image-processing-app ; kubectl apply -f image_processing_app.yaml
-```
-(there is no nice way to force it to re-fetch this, see: 
-https://github.com/kubernetes/kubernetes/issues/33664 )
-
--------
 
 ## Image Processing Client & Workers
 
@@ -78,22 +54,19 @@ kubectl --namespace haste get hpa
 kubectl --namespace haste delete horizontalpodautoscaler pipeline-worker 
 ```
 
-If the image is updated, delete the deployment, and then start again:
+If the Docker image has been updated, delete the deployment, and then start again:
 ```
 kubectl --namespace haste delete deployment.apps/pipeline-worker ; kubectl apply -f pipeline_worker.yaml ; kubectl --namespace haste delete deployment.apps/pipeline-client ; kubectl apply -f pipeline_client.yaml 
 ```
 (there is no nice way to force it to re-fetch this, see: 
 https://github.com/kubernetes/kubernetes/issues/33664 )
 
--------
 
 # Set up mongodb
 ## Set up PV/PVC for persistence for mongodb
 Run the following to set up the PV/PVC for mongodb persistence
 
 `kubectl apply -f mongodb/haste-state-mongodb.yaml`
-
-
 
 ## Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
@@ -110,13 +83,13 @@ Cause is unknown. With this error, clients are not able to connect.
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
 
-# Set up RabbitMQ
-## Set up PV/PVC for persistence for RabbitMQ
+## Set up RabbitMQ
+### Set up PV/PVC for persistence for RabbitMQ
 Run the following to set up the PV/PVC for RabbitMQ persistence
 
 `kubectl apply -f rabbitmq/haste-rabbitmq.yaml`
 
-## Set up RabbitMQ with helm
+### Set up RabbitMQ with helm
 First, you have to create the user credentials for the rabbitmq server. These will be used by scripts to access the mq. 
 The credentials are created using two secrets; one for the admin user creation, and another for all other users. 
 Because of the way the rabbitmq container is initialized, we have to create the admin user twice, once in each secret. 
@@ -126,22 +99,15 @@ Note: the administrative password needs to be changed to something random.
 The guest credentials match those defined in the client/worker -- guest/guest.
 The guest user doesn't have admin rights to login via the web mgmt GUI.
 
-```
-
-```
-
 To set up RabbitMQ with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
 `helm del --purge haste-rabbitmq`
-
 `helm install --name haste-rabbitmq --namespace haste -f rabbitmq/values.yaml stable/rabbitmq`
 
 Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/rabbitmq
 
-
-# Redeploying helm applications
+Redeploying helm applications
 To redeploy, the current deployment must be deleted (see name above) before running `helm install` again:
- 
  
 `helm delete --purge <deployment name>` 
 
@@ -153,23 +119,36 @@ haste-rabbitmq	1       	Fri May 17 18:07:15 2019	DEPLOYED	rabbitmq-5.5.1	3.7.14 
 haste-mongodb 	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
 ```
 
--------
 Setup port forwarding for remote MongoDB access:
 ```
 kubectl port-forward --namespace haste svc/haste-mongodb 27018:27017
 ```
 
--------
-# Copy files for testing 
+# Test-Running the Pipeline
+
+If everything is working correctly, the client application will be monitoring the source folder.
+To test-run the pipeline, we simply copy in a set of images (such as those published with the paper)
+
+TODO: this needs a cleanup.... 
+
+## Copy files for testing 
 
 Use the test container to copy files in/out of the volume:
 
 Copy files out (ie. to the laptop)
 ```
-kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/ .
-kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/list.txt list.txt
+kubectl cp haste/test-mikro-datamount-77cbb9858-
+kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-sgx4h -- /bin/bash:/mnt/mikro-testdata/PolinaG-KO/ .
+kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/list.txt list.txt
 
 kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif 181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif
+
+
+
+cat ../../../list.txt | xargs -t -R 2 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -t -s 4000 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -t -J@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -I@ bash -c "echo kubectl cp @ @"
 
 
 ```
@@ -183,8 +162,6 @@ kubectl --namespace haste cp /Users/benblamey/projects/haste/images/BBBC021_v1/B
 
 
 kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif /Users/benblamey/projects/haste/images/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 
-
-
 ```
 
 Copy files into source dir to test application (from inside the container)
@@ -254,3 +231,17 @@ kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/BBBC00
  
 cat list.txt | while read line; do echo $line; kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/$line $line; done
 cat list.txt | while read line; do echo $line; done
+
+## Other useful kubectl snippets 
+
+Get all running pods:
+```
+kubectl --namespace haste get pods
+```
+
+Checking resource usage/namespace quotas/default resource specs:
+```
+kubectl describe resourcequotas -n haste
+
+kubectl describe limitranges -n haste
+```
