@@ -62,13 +62,13 @@ kubectl --namespace haste delete deployment.apps/pipeline-worker ; kubectl apply
 https://github.com/kubernetes/kubernetes/issues/33664 )
 
 
-# Set up mongodb
-## Set up PV/PVC for persistence for mongodb
+## Mongodb
+### Set up PV/PVC for persistence for mongodb
 Run the following to set up the PV/PVC for mongodb persistence
 
 `kubectl apply -f mongodb/haste-state-mongodb.yaml`
 
-## Set up mongodb with helm
+### Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
 `helm install --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
@@ -127,74 +127,11 @@ kubectl port-forward --namespace haste svc/haste-mongodb 27018:27017
 # Test-Running the Pipeline
 
 If everything is working correctly, the client application will be monitoring the source folder.
-To test-run the pipeline, we simply copy in a set of images (such as those published with the paper)
+To test-run the pipeline, we simply copy in a set of images (such as those published with the paper).
+We use the test container to copy files in/out of the volume.
 
-TODO: this needs a cleanup.... 
+## Using the Broad Institute Dataset
 
-## Copy files for testing 
-
-Use the test container to copy files in/out of the volume:
-
-Copy files out (ie. to the laptop)
-```
-kubectl cp haste/test-mikro-datamount-77cbb9858-
-kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-sgx4h -- /bin/bash:/mnt/mikro-testdata/PolinaG-KO/ .
-kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/list.txt list.txt
-
-kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif 181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif
-
-
-
-cat ../../../list.txt | xargs -t -R 2 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
-cat ../../../list.txt | xargs -t -s 4000 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
-cat ../../../list.txt | xargs -t -J@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
-cat ../../../list.txt | xargs -I@ bash -c "echo kubectl cp @ @"
-
-
-```
-Copy files in (from the laptop), e.g.:
-```
-kubectl cp foo haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
-kubectl cp /Users/benblamey/projects/haste/cell-profiler-work/OutOfFocus-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
-kubectl cp /Users/benblamey/projects/haste/haste-image-analysis-spjuth-lab/worker/dry-run/MeasureImageQuality-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
-
-kubectl --namespace haste cp /Users/benblamey/projects/haste/images/BBBC021_v1/BBBC021_v1_images_Week1_22123.zip test-mikro-datamount-5bdcd6d4f-p5vrh:/mnt/mikro-testdata/BBC021_v1
-
-
-kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif /Users/benblamey/projects/haste/images/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 
-```
-
-Copy files into source dir to test application (from inside the container)
-```
-cd /mnt/mikro-testdata 
-rm ./source/*
-mkdir ./source
-cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
-```
-
-```
-cd /mnt/mikro-testdata
-rm ./source/* 
-cp -v ./BBBC021_v1/Week1_22123/*.tif ./source/
-```
-
-
-```
-cd /mnt/mikro-testdata
-rm ./source/* 
-cp -v ./BBBC021_v1/Week1_22123/*.tif ./source/
-```
-
-
-
-```
-cd /mnt/mikro-testdata
-rm ./source/* 
-cp -v ./azn/azn/*.tif ./source/
-```
-
-
-Some other snippets to fetch datasets / kickoff the pipeline... 
 ```
 for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip ; done
 ```
@@ -208,6 +145,18 @@ find ./source/* -delete
 find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
 ```
 
+# Using the images from the Spjuth Lab 
+
+(TODO: need to fetch the files.)
+
+Copy files into source dir to test application (from inside the container)
+```
+cd /mnt/mikro-testdata 
+rm ./source/*
+mkdir ./source
+cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
+```
+ 
 ```
 # run Polina
 cd /mnt/mikro-testdata
@@ -217,20 +166,14 @@ find ./source/* -delete
 find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
 ```
 
+Run with a single image for debugging.
 ```
-# run Polina Single Image
 cd /mnt/mikro-testdata
 mkdir ./source
 # use find, incase there are lots of files...
 find ./source/* -delete
 cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_D09_s5_w4BC3DBE5C-C6C1-4AA5-A7BD-40D08C48EF76.tif ./source/
 ```
-
-
-kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/BBBC006/filelist.txt
- 
-cat list.txt | while read line; do echo $line; kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/$line $line; done
-cat list.txt | while read line; do echo $line; done
 
 ## Other useful kubectl snippets 
 

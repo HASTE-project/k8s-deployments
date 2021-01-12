@@ -1,0 +1,37 @@
+
+Snippets for uploading/downloading files to the cloud using kubectl. workaround for some issue relating to large number of files/size.
+
+Copy files out (ie. to the laptop)
+```
+kubectl cp haste/test-mikro-datamount-77cbb9858-
+kubectl exec --namespace haste -it test-mikro-datamount-77cbb9858-sgx4h -- /bin/bash:/mnt/mikro-testdata/PolinaG-KO/ .
+kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/list.txt list.txt
+
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif 181214-KOday7-40X-H2O2-Glu_G09_s4_w1B81A283D-D081-4EFE-9118-4E911ED18AA8.tif
+
+
+
+cat ../../../list.txt | xargs -t -R 2 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -t -s 4000 -I@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -t -J@ bash -c "echo kubectl cp haste/test-mikro-datamount-77cbb9858-sgx4h:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/@ @"
+cat ../../../list.txt | xargs -I@ bash -c "echo kubectl cp @ @"
+
+
+```
+Copy files in (from the laptop), e.g.:
+```
+kubectl cp foo haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+kubectl cp /Users/benblamey/projects/haste/cell-profiler-work/OutOfFocus-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+kubectl cp /Users/benblamey/projects/haste/haste-image-analysis-spjuth-lab/worker/dry-run/MeasureImageQuality-TestImages.cppipe haste/test-mikro-datamount-6c59856b87-6k2bj:/mnt/mikro-testdata
+
+kubectl --namespace haste cp /Users/benblamey/projects/haste/images/BBBC021_v1/BBBC021_v1_images_Week1_22123.zip test-mikro-datamount-5bdcd6d4f-p5vrh:/mnt/mikro-testdata/BBC021_v1
+
+
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif /Users/benblamey/projects/haste/images/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9
+```
+
+
+kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/BBBC006/filelist.txt
+
+cat list.txt | while read line; do echo $line; kubectl cp haste/test-mikro-datamount-77cbb9858-h756d:/mnt/mikro-testdata/PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/$line $line; done
+cat list.txt | while read line; do echo $line; done
