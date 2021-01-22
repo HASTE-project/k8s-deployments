@@ -200,7 +200,7 @@ find ./source/* -delete
 find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
 ```
 
-# Using the images from the Spjuth Lab 
+## Using the images from the Spjuth Lab 
 
 (TODO: need to fetch the files.)
 
@@ -230,16 +230,3 @@ find ./source/* -delete
 cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_D09_s5_w4BC3DBE5C-C6C1-4AA5-A7BD-40D08C48EF76.tif ./source/
 ```
 
-## Other useful kubectl snippets 
-
-Get all running pods:
-```
-kubectl --namespace haste get pods
-```
-
-Checking resource usage/namespace quotas/default resource specs:
-```
-kubectl describe resourcequotas -n haste
-
-kubectl describe limitranges -n haste
-```
