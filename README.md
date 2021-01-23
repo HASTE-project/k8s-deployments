@@ -111,14 +111,17 @@ Run the following to set up the PV/PVC for mongodb persistence (again, contextua
 ### Set up mongodb with helm
 To set up mongodb with helm chart, run following command from a point with access to Ola's kubernetes cluster and with the `values.yaml` file available:
 
-`helm install --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
+```
+helm install --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb
+```
 -or upgrade existing-
-`helm upgrade --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb`
-
-
-`helm delete --purge haste-mongodb`
-
-Any additional parameters can be configured with additional `--set <param>=<value>` entries, full list of parameters available at https://github.com/helm/charts/tree/master/stable/mongodb
+```
+helm upgrade --name haste-mongodb --namespace haste -f mongodb/values.yaml stable/mongodb
+```
+-or to delete-
+```
+helm delete --purge haste-mongodb
+```
 
 ### Port forwarding for Mongo
 It is useful to configure port forwarding from your local machine for accessing MongoDB, which will be populated with records of processed images. (We used [Robo 3T](https://robomongo.org/) during the initial development). 
@@ -143,13 +146,19 @@ haste-rabbitmq	1       	Fri May 17 18:07:15 2019	DEPLOYED	rabbitmq-5.5.1	3.7.14 
 haste-mongodb 	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6      	haste  
 ```
 
+
 ## Image Processing Client & Workers
 
 We are finally ready the deploy the HASTE client and workers!
 
+The CellProfiler pipeline to use needs to be available on storage accessible to the worker pod. To reproduce the results from the paper, use this .cppipe file:
+```
+https://github.com/HASTE-project/cellprofiler-pipeline/blob/master/worker/dry-run/MeasureImageQuality-TestImages.cppipe
+```
+
 `pipeline_client.yaml` needs to be configured with the path of the 'source' directory -- where the files arrive from the microscope, and the (internal) host name of the RMQ service.
 
-`pipeline_worker.yaml` needs to be configured with the path of the CellProfiler pipeline file (TODO: FROM WHERE????), and the output tier directory paths and thresholds. In the paper, the output tiers were simply directories on the NAS. In practice, these could be different local and remote storage platforms.  
+`pipeline_worker.yaml` needs to be configured with the path of the CellProfiler pipeline file, and the output tier directory paths and thresholds. In the paper, the output tiers were simply directories on the NAS. In practice, these could be different local and remote storage platforms.  
 
 Next, start the client and workers:
 ```
@@ -185,22 +194,8 @@ If everything is working correctly, the client application will be monitoring th
 To test-run the pipeline, we simply copy in a set of images (such as those published with the paper).
 We use the test container to copy files in/out of the volume.
 
-## Using the Broad Institute Dataset
 
-```
-for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip ; done
-```
-
-```
-# run BBBC006
-cd /mnt/mikro-testdata
-mkdir ./source
-# use find, incase there are lots of files...
-find ./source/* -delete
-find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
-```
-
-## Using the images from the Spjuth Lab 
+## Using the imageset used in the paper 
 
 (TODO: need to fetch the files.)
 
@@ -230,3 +225,18 @@ find ./source/* -delete
 cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_D09_s5_w4BC3DBE5C-C6C1-4AA5-A7BD-40D08C48EF76.tif ./source/
 ```
 
+## Using the Broad Institute Dataset
+
+Download the files:
+```
+for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip ; done
+```
+
+```
+# run BBBC006
+cd /mnt/mikro-testdata
+mkdir ./source
+# use find, incase there are lots of files...
+find ./source/* -delete
+find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
+```
