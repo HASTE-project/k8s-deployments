@@ -32,6 +32,7 @@ The pipeline is intended to be deployed into lab environments and process images
   * [Download the pipeline](#download-the-pipeline)
   * [Using the imageset used in the paper](#using-the-imageset-used-in-the-paper)
   * [Using the Broad Institute Dataset](#using-the-broad-institute-dataset)
+- [Questions?](#questions?)
   
 
 
@@ -317,3 +318,7 @@ mkdir ./source
 find ./source/* -delete
 find ./BBBC006 -name '*.tif' -exec cp '{}' ./source \;
 ```
+
+# Questions?
+
+We'd love to hear from you! ben.blamey@it.uu.se
