@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: pipeline-worker
-          image: benblamey/haste_pipeline_worker:latest
+          image: benblamey/haste_pipeline_worker:v3
           args:
             - "--host"
             - haste-rabbitmq.haste.svc.cluster.local
@@ -38,6 +38,12 @@ spec:
                     "root_path": "/mnt/mikro-testdata/source/",
                     "pipeline": "/mnt/mikro-testdata/MeasureImageQuality-TestImages.cppipe",
                     "storage_policy": "[ [0, 0.25, \"tierD\"], [0.25, 0.50, \"tierC\"], [0.50, 0.75, \"tierB\"], [0.75, 1.01, \"tierA\"] ]",
+                    "interestingness_model": {
+                        "name":  "LogisticInterestingnessModel",
+                        "key": ["cellprofiler_output", "ImageQuality_PowerLogLogSlope_myimages"],
+                        "k": -4.5,
+                        "x_0": -1.4
+                    },
                     "haste_storage_client_config": {
                       "haste_metadata_server": {
                         "connection_string": "mongodb://haste-mongodb:27017/streams"
@@ -45,35 +51,35 @@ spec:
                       "log_level": "DEBUG",
                       "targets": [
                         {
-                          "id": "tier0",
+                          "id": "tierA",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/0/"
+                            "target_dir": "/mnt/mikro-testdata/target/A/"
                           }
                         },
                         {
-                          "id": "tier1",
+                          "id": "tierB",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/1/"
+                            "target_dir": "/mnt/mikro-testdata/target/B/"
                           }
                         },
                         {
-                          "id": "tier2",
+                          "id": "tierC",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/2/"
+                            "target_dir": "/mnt/mikro-testdata/target/C/"
                           }
                         },
                         {
-                          "id": "tier3",
+                          "id": "tierD",
                           "class": "haste_storage_client.storage.storage.MoveToDir",
                           "config": {
                             "source_dir": "/mnt/mikro-testdata/source/",
-                            "target_dir": "/mnt/mikro-testdata/target/3/"
+                            "target_dir": "/mnt/mikro-testdata/target/D/"
                           }
                         }
                       ]

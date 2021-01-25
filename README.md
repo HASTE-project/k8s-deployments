@@ -49,6 +49,10 @@ kubectl apply -f ubuntu-container.yaml
 Test that the Ubuntu pod can access the storage (check the Kubernetes UI for the pod ID), with a remote shell:
 ```
 kubectl exec --namespace haste -it 	test-mikro-datamount-77cbb9858-cvd7j bash
+
+# install curl (needed to download datasets)
+apt update
+apt -y install curl
 ```
 
 In our example, the storage is mounted under `/mnt/mikro-testdata`.
@@ -98,6 +102,13 @@ Any additional parameters can be configured with additional `--set <param>=<valu
 A single RMQ pod will be sufficient, even for many thousands of images.
 
 Now, it should be possible to log onto the RMQ web interface (the client application will create a queue for incoming images).
+
+Or, start port-forwarding and log in with the adminstrative credentials you created earlier:
+```
+kubectl port-forward haste-rabbitmq-0 --namespace haste 15672:15672
+```
+
+
 
 ## Mongodb
 
@@ -151,10 +162,6 @@ haste-mongodb 	1       	Mon May  6 09:42:40 2019	DEPLOYED	mongodb-5.6.1 	4.0.6  
 
 We are finally ready the deploy the HASTE client and workers!
 
-The CellProfiler pipeline to use needs to be available on storage accessible to the worker pod. To reproduce the results from the paper, use this .cppipe file:
-```
-https://github.com/HASTE-project/cellprofiler-pipeline/blob/master/worker/dry-run/MeasureImageQuality-TestImages.cppipe
-```
 
 `pipeline_client.yaml` needs to be configured with the path of the 'source' directory -- where the files arrive from the microscope, and the (internal) host name of the RMQ service.
 
@@ -166,12 +173,20 @@ kubectl apply -f pipeline_client.yaml
 kubectl apply -f pipeline_worker.yaml
 ```
 
+**Note that to reproduce the experiment in the paper exactly, use v3 for the worker, and v1 for the cient, as configured.** 
+
+(For development purposes, if we need to delete the deployment to fetch a fresh image:)
+```
+kubectl delete -n haste deployment pipeline-worker ; kubectl apply -f pipeline_worker.yaml
+kubectl delete -n haste deployment pipeline-client ; kubectl apply -f pipeline_client.yaml
+```
+
 ### Scaling
 We only use a single instance of the client application. The worker can be scaled, by default a single pod will be deployed.
 
 A busy worker pod will consume ~50% cpu -- so this auto-scaler will simply scale to the specified maximum whenever there are messages on the queue:
 ```
-kubectl --namespace haste autoscale deployment pipeline-worker --cpu-percent=10 --min=1 --max=18
+kubectl --namespace haste autoscale deployment pipeline-worker --cpu-percent=10 --min=1 --max=16
 kubectl --namespace haste get hpa
 ```
 
@@ -195,23 +210,35 @@ To test-run the pipeline, we simply copy in a set of images (such as those publi
 We use the test container to copy files in/out of the volume.
 
 
+## Download the pipeline
+
+The CellProfiler pipeline to use needs to be available on storage accessible to the worker pod. 
+To reproduce the results from the paper, download our .cppipe file from github:
+
+```
+cd /mnt/mikro-testdata
+curl -o MeasureImageQuality-TestImages.cppipe https://raw.githubusercontent.com/HASTE-project/cellprofiler-pipeline/master/worker/dry-run/MeasureImageQuality-TestImages.cppipe
+```
+
 ## Using the imageset used in the paper 
 
-(TODO: need to fetch the files.)
+The imageset used for the paper was:
+http://doi.org/10.17044/scilifelab.12811997.v1
+
+Run these commands from inside the Ubuntu pod we created earlier.
+```
+cd /mnt/mikro-testdata
+curl -L https://scilifelab.figshare.com/ndownloader/files/24271214 | tar -xz # w1
+curl -L https://scilifelab.figshare.com/ndownloader/files/24271223 | tar -xz # w2
+curl -L https://scilifelab.figshare.com/ndownloader/files/24271229 | tar -xz # w3
+curl -L https://scilifelab.figshare.com/ndownloader/files/24271232 | tar -xz # w4
+curl -L https://scilifelab.figshare.com/ndownloader/files/24271238 | tar -xz # w5
+```
 
 Copy files into source dir to test application (from inside the container)
-```
-cd /mnt/mikro-testdata 
-rm ./source/*
-mkdir ./source
-cp -v PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source/
-```
- 
-```
-# run Polina
+ ```
 cd /mnt/mikro-testdata
 mkdir ./source
-# use find, incase there are lots of files...
 find ./source/* -delete
 find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
 ```
@@ -225,11 +252,32 @@ find ./source/* -delete
 cp ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/181214-KOday7-40X-H2O2-Glu_D09_s5_w4BC3DBE5C-C6C1-4AA5-A7BD-40D08C48EF76.tif ./source/
 ```
 
+When processing is running, the progress is visible in the RMQ mgmt GUI:
+![RMQ Mgmt GUI](./docs_rmq_mgmt.png) 
+
+Records for processed images are written to MongoDB:
+![RMQ Mgmt GUI](./docs_image_mongodb_record.png) 
+
+In this configuration (used for the paper), images are moved to the 'target' directory, with files visible under the various tiers.
+
+Output files are collated by HASTE Stream ID. A new stream ID is generated automatically when the 'client' application is (re)started.
+ 
+To verify consistency with the classifications in the paper, count the number of output files in each tier:
+```
+find /mnt/mikro-testdata/target/A -name *.tif | wc -l
+find /mnt/mikro-testdata/target/B -name *.tif | wc -l
+find /mnt/mikro-testdata/target/C -name *.tif | wc -l
+find /mnt/mikro-testdata/target/D -name *.tif | wc -l
+```
+
+Confirm these match the totals listed in the paper.
+
+
 ## Using the Broad Institute Dataset
 
 Download the files:
 ```
-for i in {00..33} ; do wget https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip ; done
+for i in {00..33} ; do curl https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_${i}.zip -o BBBC006/BBBC006_v1_images_z_${i}.zip ; done
 ```
 
 ```
