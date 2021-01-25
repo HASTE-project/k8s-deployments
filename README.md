@@ -263,11 +263,12 @@ In this configuration (used for the paper), images are moved to the 'target' dir
 Output files are collated by HASTE Stream ID. A new stream ID is generated automatically when the 'client' application is (re)started.
  
 To verify consistency with the classifications in the paper, count the number of output files in each tier:
+(In this case, the auto-generate HASTE Stream ID was `2021_01_25__05_56_27_mikro-testdata-source`).
 ```
-find /mnt/mikro-testdata/target/A -name *.tif | wc -l
-find /mnt/mikro-testdata/target/B -name *.tif | wc -l
-find /mnt/mikro-testdata/target/C -name *.tif | wc -l
-find /mnt/mikro-testdata/target/D -name *.tif | wc -l
+find /mnt/mikro-testdata/target/A/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/B/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/C/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/D/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
 ```
 
 Confirm these match the totals listed in the paper.
