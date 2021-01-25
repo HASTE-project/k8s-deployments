@@ -12,6 +12,29 @@ https://www.biorxiv.org/content/10.1101/2020.09.13.274779v1
 
 The pipeline is intended to be deployed into lab environments and process images as they are written to disk by a microscope. To reproduce the results in the paper, one simply copies the example dataset into the 'source' folder. The application will process all images in turn, queuing them as necessary, automatically scaling according to the workload.
 
+# Contents
+
+- [Deployment](#deployment)
+  * [Prerequisites](#prerequisites)
+  * [Storage](#storage)
+  * [RabbitMQ](#rabbitmq)
+    + [Set up PV/PVC for persistence for RabbitMQ](#set-up-pv-pvc-for-persistence-for-rabbitmq)
+    + [RabbitMQ credentials](#rabbitmq-credentials)
+    + [Set up RabbitMQ with helm](#set-up-rabbitmq-with-helm)
+  * [Mongodb](#mongodb)
+    + [Set up PV/PVC for persistence for mongodb](#set-up-pv-pvc-for-persistence-for-mongodb)
+    + [Set up mongodb with helm](#set-up-mongodb-with-helm)
+    + [Port forwarding for Mongo](#port-forwarding-for-mongo)
+  * [Redeploying helm applications (RMQ, Mongo)](#redeploying-helm-applications--rmq--mongo-)
+  * [Image Processing Client & Workers](#image-processing-client---workers)
+    + [Scaling](#scaling)
+- [Test-Running the Pipeline](#test-running-the-pipeline)
+  * [Download the pipeline](#download-the-pipeline)
+  * [Using the imageset used in the paper](#using-the-imageset-used-in-the-paper)
+  * [Using the Broad Institute Dataset](#using-the-broad-institute-dataset)
+  
+
+
 # Deployment
 
 To reproduce the experimental results presented in the paper, it is first necessary to deploy the software pipeline to your cluster. The deployment scripts in this repository will need to be edited for your cluster, e.g. storage, user authentication and TCP ingress (for security), and scaling (depending on your available hardware). 
@@ -48,7 +71,7 @@ kubectl apply -f ubuntu-container.yaml
 
 Test that the Ubuntu pod can access the storage (check the Kubernetes UI for the pod ID), with a remote shell:
 ```
-kubectl exec --namespace haste -it 	test-mikro-datamount-77cbb9858-cvd7j bash
+kubectl exec --namespace haste -it 	test-mikro-datamount-77cbb9858-hcfkt bash
 
 # install curl (needed to download datasets)
 apt update
@@ -241,6 +264,8 @@ cd /mnt/mikro-testdata
 mkdir ./source
 find ./source/* -delete
 find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
+
+cp -v ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source
 ```
 
 Run with a single image for debugging.
@@ -264,11 +289,14 @@ Output files are collated by HASTE Stream ID. A new stream ID is generated autom
  
 To verify consistency with the classifications in the paper, count the number of output files in each tier:
 (In this case, the auto-generate HASTE Stream ID was `2021_01_25__05_56_27_mikro-testdata-source`).
+
+# TODO dont check in
 ```
-find /mnt/mikro-testdata/target/A/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/B/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/C/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/D/2021_01_25__05_56_27_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/0/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/1/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/2/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
+find /mnt/mikro-testdata/target/3/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
+
 ```
 
 Confirm these match the totals listed in the paper.
