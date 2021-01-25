@@ -258,17 +258,15 @@ curl -L https://scilifelab.figshare.com/ndownloader/files/24271232 | tar -xz # w
 curl -L https://scilifelab.figshare.com/ndownloader/files/24271238 | tar -xz # w5
 ```
 
-Copy files into source dir to test application (from inside the container)
+Copy files into source dir to test application (from inside the container)...
  ```
 cd /mnt/mikro-testdata
 mkdir ./source
 find ./source/* -delete
 find ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9 -name '*.tif' -exec cp -v '{}' ./source \;
-
-cp -v ./PolinaG-KO/181214-KOday7-40X-H2O2-Glu/2018-12-14/9/*.tif ./source
 ```
 
-Run with a single image for debugging.
+Run with a single image for debugging...
 ```
 cd /mnt/mikro-testdata
 mkdir ./source
