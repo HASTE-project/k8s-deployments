@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: pipeline-client
-          image: benblamey/haste_pipeline_client:v1
+          image: benblamey/haste_pipeline_client:v3
           args:
             - "--include"
             - tif

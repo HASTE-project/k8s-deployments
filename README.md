@@ -288,18 +288,20 @@ In this configuration (used for the paper), images are moved to the 'target' dir
 Output files are collated by HASTE Stream ID. A new stream ID is generated automatically when the 'client' application is (re)started.
  
 To verify consistency with the classifications in the paper, count the number of output files in each tier:
-(In this case, the auto-generate HASTE Stream ID was `2021_01_25__05_56_27_mikro-testdata-source`).
-
-# TODO dont check in
-```
-find /mnt/mikro-testdata/target/0/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/1/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/2/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
-find /mnt/mikro-testdata/target/3/2021_01_25__08_23_50_mikro-testdata-source -name *.tif | wc -l
+(In this case, the auto-generate HASTE Stream ID was `2021_01_25__12_14_15_mikro-testdata-source`).
 
 ```
+$ find /mnt/mikro-testdata/target/A/2021_01_25__12_14_15_mikro-testdata-source -name *.tif | wc -l
+726
+$ find /mnt/mikro-testdata/target/B/2021_01_25__12_14_15_mikro-testdata-source -name *.tif | wc -l
+731
+$ find /mnt/mikro-testdata/target/C/2021_01_25__12_14_15_mikro-testdata-source -name *.tif | wc -l
+606
+$ find /mnt/mikro-testdata/target/D/2021_01_25__12_14_15_mikro-testdata-source -name *.tif | wc -l
+636
+```
 
-Confirm these match the totals listed in the paper.
+These should match the totals listed in the paper/shown above.
 
 
 ## Using the Broad Institute Dataset
