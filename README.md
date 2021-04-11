@@ -5,8 +5,9 @@ These deployment scripts configure/deploy the client and worker applications, as
 
 See:
 ```
-"Rapid development of cloud-native intelligent data pipelines for scientific data streams using the HASTE Toolkit"
-https://www.biorxiv.org/content/10.1101/2020.09.13.274779v1
+Rapid development of cloud-native intelligent data pipelines for scientific data streams using the HASTE Toolkit. 
+Blamey, Toor, Dahlö, Wieslander, Harrison, Sintorn, Sabirsh, Wählby, Spjuth, Hellander.
+https://doi.org/10.1093/gigascience/giab018 Gigascience 10(3). 2021.
 ```
 
 
